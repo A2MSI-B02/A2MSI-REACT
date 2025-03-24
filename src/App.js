@@ -6,6 +6,7 @@ import Accueil from './pages/accueil';
 import Destination from './pages/destination';
 import Connexion from './pages/connexion';
 import Contact from './pages/contact';
+import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
   return (

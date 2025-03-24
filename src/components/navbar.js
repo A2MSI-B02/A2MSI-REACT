@@ -1,26 +1,21 @@
-// src/components/Navbar.js
-import React from 'react';
-import { Link } from 'react-router-dom';
+import { Navbar, Nav, Container } from "react-bootstrap";
 
-function Navbar() {
-  return (
-    <nav>
-      <ul>
-        <li>
-          <Link to="/">Accueil</Link>
-        </li>
-        <li>
-          <Link to="/destination">Destination</Link>
-        </li>
-        <li>
-          <Link to="/connexion">Connexion</Link>
-        </li>
-        <li>
-          <Link to="/contact">Contact</Link>
-        </li>
-      </ul>
-    </nav>
-  );
-}
+const MyNavbar = () => {
+    return (
+        <Navbar bg="dark" variant="dark" expand="lg">
+            <Container>
+                <Navbar.Brand href="/">Mon Planificateur</Navbar.Brand>
+                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Collapse id="basic-navbar-nav">
+                    <Nav className="me-auto">
+                        <Nav.Link href="/">Accueil</Nav.Link>
+                        <Nav.Link href="/destinations">Destinations</Nav.Link>
+                        <Nav.Link href="/contact">Contact</Nav.Link>
+                    </Nav>
+                </Navbar.Collapse>
+            </Container>
+        </Navbar>
+    );
+};
 
-export default Navbar;
+export default MyNavbar;

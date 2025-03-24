@@ -1,7 +1,7 @@
 // src/pages/Accueil.js
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../css/index.css'; // Assurez-vous que le chemin est correct
+import '../index.css'; // Assurez-vous que le chemin est correct
 import 'leaflet/dist/leaflet.css';
 
 function Accueil() {
