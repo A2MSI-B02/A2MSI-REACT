@@ -1,24 +1,23 @@
-import logo from './logo.svg';
-import './App.css';
+// src/App.js
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // Remplacez Switch par Routes
+import Navbar from './components/navbar';
+import Accueil from './pages/accueil';
+import Destination from './pages/destination';
+import Connexion from './pages/connexion';
+import Contact from './pages/contact';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Navbar />
+      <Routes> {/* Utilisez Routes ici */}
+        <Route path="/" element={<Accueil />} exact /> {/* Utilisez element au lieu de component */}
+        <Route path="/destination" element={<Destination />} />
+        <Route path="/connexion" element={<Connexion />} />
+        <Route path="/contact" element={<Contact />} />
+      </Routes>
+    </Router>
   );
 }
 
