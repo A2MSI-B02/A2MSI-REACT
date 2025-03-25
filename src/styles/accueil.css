@@ -1,0 +1,56 @@
+.cards-container {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    max-width: 1000px;
+    margin: auto;
+    overflow: hidden;
+}
+
+.card {
+    flex: 1;
+    height: 300px;
+    border-radius: 20px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    transition: flex-grow 0.5s ease, opacity 0.5s ease;
+}
+
+.card-content {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.card:hover {
+    flex-grow: 4;
+}
+
+.card:hover .card-content {
+    opacity: 1;
+}
+
+.card-title {
+    color: white;
+}
+
+.card-1 { background-image: url('./Picture/anders-jilden-cYrMQA7a3Wc-unsplash.jpg'); }
+.card-2 { background-image: url('./Picture/denys-nevozhai-guNIjIuUcgY-unsplash.jpg'); }
+.card-3 { background-image: url('./Picture/Gorge\ du\ verdon.jpg'); }
+.card-4 { background-image: url('./Picture/ivana-cajina-TUXUCVXmjQk-unsplash.jpg'); }
+.card-5 { background-image: url('./Picture/kalen-emsley-mgJSkgIo_JI-unsplash.jpg'); }
+
+.footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+    margin-top: 40px;
+    background-color: rgb(13, 110, 253);
+    color: white;
+}
