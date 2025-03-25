@@ -74,7 +74,7 @@ const Connexion = () => {
             </Form>
 
             <div className="text-center mt-3">
-                <p>Pas encore membre ? <a href="/signup">S'inscrire</a></p>
+                <p>Pas encore membre ? <a href="/inscription">S'inscrire</a></p>
             </div>
         </Container>
     );
