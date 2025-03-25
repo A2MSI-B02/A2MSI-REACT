@@ -27,6 +27,7 @@ const Login = () => {
             const userData = snapshot.val();
 
             if (userData) {
+                sessionStorage.setItem("userFirstName", userData.firstName);
                 sessionStorage.setItem("userRole", userData.role);
 
                 // Redirection selon le rôle

@@ -5,6 +5,7 @@ import { Container, Button } from "react-bootstrap";
 
 const AdminDashboard = () => {
     const navigate = useNavigate();
+    const userFirstName = sessionStorage.getItem("userFirstName");
 
     const handleLogout = () => {
         auth.signOut().then(() => {
@@ -15,7 +16,7 @@ const AdminDashboard = () => {
 
     return (
         <Container className="mt-5">
-            <h2>Bienvenue, Administrateur !</h2>
+            <h2>Bienvenue, {userFirstName} ! 😊</h2>
             <Button variant="primary" className="m-2">Gestion du compte</Button>
             <Button variant="secondary" className="m-2">Notifications</Button>
             <Button variant="info" className="m-2">Gestion des utilisateurs</Button>
