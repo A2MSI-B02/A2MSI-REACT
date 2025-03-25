@@ -45,9 +45,9 @@ const Login = () => {
 
     return (
         <Container className="mt-5">
-            <h2>Connexion</h2>
-            {error && <p style={{ color: "red" }}>{error}</p>}
-            <Form onSubmit={handleSubmit}>
+            <h2 className="text-center">Connexion</h2>
+            {error && <p className="text-center text-danger">{error}</p>}
+            <Form onSubmit={handleSubmit} className="mx-auto" style={{ maxWidth: "400px" }}>
                 <Form.Group>
                     <Form.Label>Email</Form.Label>
                     <Form.Control type="email" required onChange={(e) => setEmail(e.target.value)} />
@@ -58,8 +58,11 @@ const Login = () => {
                     <Form.Control type="password" required onChange={(e) => setPassword(e.target.value)} />
                 </Form.Group>
 
-                <Button variant="primary" type="submit" className="mt-3">Se connecter</Button>
+                <Button variant="primary" type="submit" className="mt-3 w-100">Se connecter</Button>
             </Form>
+            <div className="text-center mt-3">
+                <p className="mb-0">Pas encore membre ? <a href="/inscription">S'inscrire</a></p>
+            </div>
         </Container>
     );
 };

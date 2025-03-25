@@ -63,9 +63,9 @@ const Inscription = () => {
 
     return (
         <Container className="mt-5">
-            <h2>Inscription</h2>
-            {error && <p style={{ color: "red" }}>{error}</p>}
-            <Form onSubmit={handleSubmit}>
+            <h2 className="text-center">Inscription</h2>
+            {error && <p className="text-center text-danger">{error}</p>}
+            <Form onSubmit={handleSubmit} className="mx-auto" style={{ maxWidth: "400px" }}>
                 <Form.Group>
                     <Form.Label>Nom</Form.Label>
                     <Form.Control type="text" name="lastName" required onChange={handleChange} />
@@ -99,8 +99,11 @@ const Inscription = () => {
                     <Form.Control type="password" name="confirmPassword" required onChange={handleChange} />
                 </Form.Group>
 
-                <Button variant="primary" type="submit" className="mt-3">S'inscrire</Button>
+                <Button variant="primary" type="submit" className="mt-3 w-100">S'inscrire</Button>
             </Form>
+            <div className="text-center mt-3">
+                <p className="mb-0">Déjà membre ? <a href="/connexion">Se connecter</a></p>
+            </div>
         </Container>
     );
 };
