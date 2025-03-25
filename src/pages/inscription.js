@@ -1,98 +1,106 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { auth, database, createUserWithEmailAndPassword, ref, set } from "../firebaseConfig";
-import { Container, Form, Button, Alert } from "react-bootstrap";
+import { auth, database } from "../firebaseConfig"; // Import Firebase
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { ref, set } from "firebase/database";
+import { Container, Form, Button } from "react-bootstrap";
 
 const Inscription = () => {
-    const [nom, setNom] = useState("");
-    const [prenom, setPrenom] = useState("");
-    const [email, setEmail] = useState("");
-    const [role, setRole] = useState("Utilisateur"); // Valeur par défaut
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
+    const [formData, setFormData] = useState({
+        firstName: "",
+        lastName: "",
+        email: "",
+        role: "Utilisateur", // Valeur par défaut
+        password: "",
+        confirmPassword: "",
+    });
+
     const [error, setError] = useState("");
     const navigate = useNavigate();
 
-    const handleSignup = async (e) => {
+    // Gestion des changements des inputs
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    // Soumission du formulaire
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
 
-        if (!nom || !prenom || !email || !role || !password || !confirmPassword) {
-            setError("Tous les champs doivent être remplis !");
-            return;
-        }
-
-        if (password !== confirmPassword) {
-            setError("Les mots de passe ne correspondent pas !");
+        // Vérification des champs
+        if (formData.password !== formData.confirmPassword) {
+            setError("Les mots de passe ne correspondent pas.");
             return;
         }
 
         try {
-            // Créer l'utilisateur avec Firebase Auth
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            // Création du compte Firebase Auth
+            const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
             const userId = userCredential.user.uid;
 
-            // Sauvegarder les infos de l'utilisateur dans Firebase Database
-            await set(ref(database, `users/${userId}`), {
-                nom,
-                prenom,
-                email,
-                role,
+            // Sauvegarde des infos dans Firebase Database
+            await set(ref(database, "users/" + userId), {
+                firstName: formData.firstName,
+                lastName: formData.lastName,
+                email: formData.email,
+                role: formData.role,
             });
 
-            alert("Compte créé avec succès !");
-            navigate("/connexion"); // Rediriger vers la page de connexion
+            // Redirection selon le rôle
+            sessionStorage.setItem("userRole", formData.role);
+            if (formData.role === "Utilisateur") {
+                navigate("/userdashboard");
+            } else if (formData.role === "Professionnel") {
+                navigate("/prodashboard");
+            } else if (formData.role === "Administrateur") {
+                navigate("/admindashboard");
+            }
         } catch (error) {
-            setError("Erreur lors de l'inscription : " + error.message);
+            setError(error.message);
         }
     };
 
     return (
         <Container className="mt-5">
-            <h2 className="text-center">Inscription</h2>
-            {error && <Alert variant="danger">{error}</Alert>}
-            <Form onSubmit={handleSignup}>
-                <Form.Group className="mb-3">
+            <h2>Inscription</h2>
+            {error && <p style={{ color: "red" }}>{error}</p>}
+            <Form onSubmit={handleSubmit}>
+                <Form.Group>
                     <Form.Label>Nom</Form.Label>
-                    <Form.Control type="text" value={nom} onChange={(e) => setNom(e.target.value)} required />
+                    <Form.Control type="text" name="lastName" required onChange={handleChange} />
                 </Form.Group>
 
-                <Form.Group className="mb-3">
+                <Form.Group>
                     <Form.Label>Prénom</Form.Label>
-                    <Form.Control type="text" value={prenom} onChange={(e) => setPrenom(e.target.value)} required />
+                    <Form.Control type="text" name="firstName" required onChange={handleChange} />
                 </Form.Group>
 
-                <Form.Group className="mb-3">
+                <Form.Group>
                     <Form.Label>Email</Form.Label>
-                    <Form.Control type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                    <Form.Control type="email" name="email" required onChange={handleChange} />
                 </Form.Group>
 
-                <Form.Group className="mb-3">
+                <Form.Group>
                     <Form.Label>Choisir un rôle</Form.Label>
-                    <Form.Select value={role} onChange={(e) => setRole(e.target.value)}>
+                    <Form.Select name="role" onChange={handleChange}>
                         <option value="Utilisateur">Utilisateur</option>
                         <option value="Professionnel">Professionnel</option>
                     </Form.Select>
                 </Form.Group>
 
-                <Form.Group className="mb-3">
+                <Form.Group>
                     <Form.Label>Mot de passe</Form.Label>
-                    <Form.Control type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                    <Form.Control type="password" name="password" required onChange={handleChange} />
                 </Form.Group>
 
-                <Form.Group className="mb-3">
+                <Form.Group>
                     <Form.Label>Confirmer le mot de passe</Form.Label>
-                    <Form.Control type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
+                    <Form.Control type="password" name="confirmPassword" required onChange={handleChange} />
                 </Form.Group>
 
-                <Button variant="primary" type="submit" className="w-100">
-                    S'inscrire
-                </Button>
+                <Button variant="primary" type="submit" className="mt-3">S'inscrire</Button>
             </Form>
-
-            <div className="text-center mt-3">
-                <p>Déjà inscrit ? <a href="/login">Se connecter</a></p>
-            </div>
         </Container>
     );
 };

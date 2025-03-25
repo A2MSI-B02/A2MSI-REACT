@@ -1,83 +1,67 @@
 import React, { useState } from "react";
-import { auth, database } from "../firebaseConfig";
+import { useNavigate } from "react-router-dom";
+import { auth, database } from "../firebaseConfig"; // Import Firebase
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { ref, get } from "firebase/database";
-import { useNavigate } from "react-router-dom";
-import { Container, Form, Button, Alert } from "react-bootstrap";
+import { Container, Form, Button } from "react-bootstrap";
 
-const Connexion = () => {
+const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const navigate = useNavigate();
 
-    const handleLogin = async (e) => {
+    // Soumission du formulaire
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        setError(""); // Réinitialise les erreurs
+        setError("");
 
         try {
+            // Connexion Firebase Auth
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const userId = userCredential.user.uid;
 
-            // Récupérer les infos de l'utilisateur depuis la base de données Firebase
-            const snapshot = await get(ref(database, `users/${userId}`));
-            if (snapshot.exists()) {
-                const userData = snapshot.val();
-                sessionStorage.setItem("userId", userId);
+            // Récupération du rôle depuis la base de données
+            const userRef = ref(database, "users/" + userId);
+            const snapshot = await get(userRef);
+            const userData = snapshot.val();
+
+            if (userData) {
                 sessionStorage.setItem("userRole", userData.role);
 
-                alert(`Connexion réussie ! Rôle : ${userData.role}`);
-
-                if (userData.role === "admin") {
-                    navigate("/admin");
-                } else {
-                    navigate("/dashboard");
+                // Redirection selon le rôle
+                if (userData.role === "Utilisateur") {
+                    navigate("/userdashboard");
+                } else if (userData.role === "Professionnel") {
+                    navigate("/prodashboard");
+                } else if (userData.role === "Administrateur") {
+                    navigate("/admindashboard");
                 }
-            } else {
-                setError("Aucune donnée utilisateur trouvée.");
             }
         } catch (error) {
-            setError("Erreur de connexion : " + error.message);
+            setError("Email ou mot de passe incorrect.");
         }
     };
 
     return (
         <Container className="mt-5">
-            <h2 className="text-center">Connexion</h2>
-            {error && <Alert variant="danger">{error}</Alert>}
-            <Form onSubmit={handleLogin}>
-                <Form.Group className="mb-3">
+            <h2>Connexion</h2>
+            {error && <p style={{ color: "red" }}>{error}</p>}
+            <Form onSubmit={handleSubmit}>
+                <Form.Group>
                     <Form.Label>Email</Form.Label>
-                    <Form.Control
-                        type="email"
-                        placeholder="Entrez votre email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
+                    <Form.Control type="email" required onChange={(e) => setEmail(e.target.value)} />
                 </Form.Group>
 
-                <Form.Group className="mb-3">
+                <Form.Group>
                     <Form.Label>Mot de passe</Form.Label>
-                    <Form.Control
-                        type="password"
-                        placeholder="Entrez votre mot de passe"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
+                    <Form.Control type="password" required onChange={(e) => setPassword(e.target.value)} />
                 </Form.Group>
 
-                <Button variant="primary" type="submit" className="w-100">
-                    Se connecter
-                </Button>
+                <Button variant="primary" type="submit" className="mt-3">Se connecter</Button>
             </Form>
-
-            <div className="text-center mt-3">
-                <p>Pas encore membre ? <a href="/inscription">S'inscrire</a></p>
-            </div>
         </Container>
     );
 };
 
-export default Connexion;
+export default Login;

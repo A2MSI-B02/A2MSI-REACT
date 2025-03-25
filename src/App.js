@@ -7,6 +7,9 @@ import Destination from './pages/destination';
 import Connexion from './pages/connexion';
 import Inscription from './pages/inscription';
 import Contact from './pages/contact';
+import UserDashboard from "./pages/userdashboard";
+import ProDashboard from "./pages/prodashboard";
+import AdminDashboard from "./pages/admindashboard";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
@@ -19,6 +22,9 @@ function App() {
         <Route path="/connexion" element={<Connexion />} />
         <Route path="/inscription" element={<Inscription />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/userdashboard" element={<UserDashboard />} />
+        <Route path="/prodashboard" element={<ProDashboard />} />
+        <Route path="/admindashboard" element={<AdminDashboard />} />
       </Routes>
     </Router>
   );
