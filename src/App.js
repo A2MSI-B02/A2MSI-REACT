@@ -5,6 +5,7 @@ import Navbar from './components/navbar';
 import Accueil from './pages/accueil';
 import Destination from './pages/destination';
 import Connexion from './pages/connexion';
+import Inscription from './pages/inscription';
 import Contact from './pages/contact';
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -16,6 +17,7 @@ function App() {
         <Route path="/" element={<Accueil />} exact /> {/* Utilisez element au lieu de component */}
         <Route path="/destination" element={<Destination />} />
         <Route path="/connexion" element={<Connexion />} />
+        <Route path="/inscription" element={<Inscription />} />
         <Route path="/contact" element={<Contact />} />
       </Routes>
     </Router>

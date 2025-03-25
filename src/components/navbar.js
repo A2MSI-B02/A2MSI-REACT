@@ -11,7 +11,7 @@ const MyNavbar = () => {
                     <Nav className="me-auto">
                         <Nav.Link href="/">Accueil</Nav.Link>
                         <Nav.Link href="/destinations">Destinations</Nav.Link>
-                        <Nav.Link href="/contact">Connexion</Nav.Link>
+                        <Nav.Link href="/connexion">Connexion</Nav.Link>
                         <Nav.Link href="/contact">Contact</Nav.Link>
                     </Nav>
                 </Navbar.Collapse>
