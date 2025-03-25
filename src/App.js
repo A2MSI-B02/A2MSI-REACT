@@ -1,23 +1,21 @@
 // src/App.js
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // Remplacez Switch par Routes
-import Navbar from './components/navbar';
-import Accueil from './pages/accueil';
-import Destination from './pages/destination';
-import Connexion from './pages/connexion';
-import Inscription from './pages/inscription';
-import Contact from './pages/contact';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Navbar from './components/navbar'; // Assurez-vous que le chemin est correct
+import Accueil from './pages/accueil'; // Assurez-vous que le chemin est correct
+import Destination from './pages/destination'; // Assurez-vous que le chemin est correct
+import Connexion from './pages/connexion'; // Assurez-vous que le chemin est correct
+import Contact from './pages/contact'; // Assurez-vous que le chemin est correct
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
   return (
     <Router>
       <Navbar />
-      <Routes> {/* Utilisez Routes ici */}
-        <Route path="/" element={<Accueil />} exact /> {/* Utilisez element au lieu de component */}
+      <Routes>
+        <Route path="/" element={<Accueil />} />
         <Route path="/destination" element={<Destination />} />
         <Route path="/connexion" element={<Connexion />} />
-        <Route path="/inscription" element={<Inscription />} />
         <Route path="/contact" element={<Contact />} />
       </Routes>
     </Router>

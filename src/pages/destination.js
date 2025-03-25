@@ -1,8 +1,8 @@
-// src/pages/Destination.js
+// src/pages/Contact.js
 import React from 'react';
 
 function Destination() {
-  return <h1>Page des Destinations</h1>;
+  return <h1>Page de Contact</h1>;
 }
 
 export default Destination;

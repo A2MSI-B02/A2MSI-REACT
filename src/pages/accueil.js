@@ -1,12 +1,11 @@
 // src/pages/Accueil.js
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../index.css'; // Assurez-vous que le chemin est correct
+import '../styles/accueil.css'; // Assurez-vous que le chemin est correct
 import 'leaflet/dist/leaflet.css';
 
 function Accueil() {
   const searchDestination = () => {
-    // Exemple de fonctionnalité de recherche
     const searchInput = document.getElementById('search').value;
     if (searchInput.trim() === '') {
       alert('Veuillez entrer une ville pour rechercher.');
