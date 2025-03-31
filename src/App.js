@@ -6,7 +6,7 @@ import Accueil from './pages/accueil';
 import Destination from './pages/destination';
 import Connexion from './pages/connexion';
 import Inscription from './pages/inscription';
-import Contact from './pages/contact';
+import ServiceClient from './pages/serviceClient';
 import UserDashboard from "./pages/userdashboard";
 import ProDashboard from "./pages/prodashboard";
 import AdminDashboard from "./pages/admindashboard";
@@ -21,7 +21,7 @@ function App() {
         <Route path="/destination" element={<Destination />} />
         <Route path="/connexion" element={<Connexion />} />
         <Route path="/inscription" element={<Inscription />} />
-        <Route path="/contact" element={<Contact />} />
+        <Route path="/service-client" element={<ServiceClient />} />
         <Route path="/userdashboard" element={<UserDashboard />} />
         <Route path="/prodashboard" element={<ProDashboard />} />
         <Route path="/admindashboard" element={<AdminDashboard />} />

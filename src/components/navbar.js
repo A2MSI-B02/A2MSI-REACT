@@ -1,5 +1,6 @@
 import React from "react";
 import { Navbar, Nav, Container } from "react-bootstrap";
+import '../styles/navbar.css';
 
 const MyNavbar = () => {
     return (
@@ -12,7 +13,7 @@ const MyNavbar = () => {
                         <Nav.Link href="/">Accueil</Nav.Link>
                         <Nav.Link href="/destinations">Destinations</Nav.Link>
                         <Nav.Link href="/Connexion">Connexion</Nav.Link>
-                        <Nav.Link href="/contact">Contact</Nav.Link>
+                        <Nav.Link href="/service-client">Service Client</Nav.Link>
                     </Nav>
                 </Navbar.Collapse>
             </Container>
