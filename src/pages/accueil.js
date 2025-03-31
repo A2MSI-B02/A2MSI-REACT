@@ -1,21 +1,23 @@
-// src/pages/Accueil.js
 import React from 'react';
+import { useNavigate } from 'react-router-dom'; // Import du hook useNavigate
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/accueil.css'; // Assurez-vous que le chemin est correct
 import 'leaflet/dist/leaflet.css';
+import Footer from '../components/footer'; // Import du composant Footer
 
 function Accueil() {
+  const navigate = useNavigate(); // Initialisation du hook useNavigate
   const searchDestination = () => {
     const searchInput = document.getElementById('search').value;
     if (searchInput.trim() === '') {
       alert('Veuillez entrer une ville pour rechercher.');
     } else {
-      alert(`Recherche en cours pour : ${searchInput}`);
+      navigate('/destinations'); // Redirection vers la page "Destinations"
     }
   };
 
   const handleLearnMore = (destination) => {
-    alert(`En savoir plus sur : ${destination}`);
+    navigate('/destinations'); // Redirection vers la page "Destinations"
   };
 
   return (
@@ -26,7 +28,7 @@ function Accueil() {
       </header>
 
       <main className="container">
-        <div className="row">
+        <div className="row centered-row">
           <div className="col-md-6">
             <h2>Planifier un roadtrip</h2>
             <input type="text" id="search" className="form-control" placeholder="Entrez une ville..." />
@@ -35,7 +37,7 @@ function Accueil() {
         </div>
 
         <div className="cards-container mt-5">
-          {['Destination 1', 'Destination 2', 'Destination 3', 'Destination 4', 'Destination 5'].map((destination, index) => (
+          {['New York', 'Bangkok', 'Hanoï', 'Le Pirée', 'Barcelone'].map((destination, index) => (
             <div key={index} className={`card card-${index + 1}`}>
               <div className="card-content">
                 <h3 className="card-title">{destination}</h3>
@@ -46,10 +48,7 @@ function Accueil() {
         </div>
       </main>
 
-      <footer className="footer mt-6">
-        <h4>Trip n'Go</h4>
-        <p>2025 Voyage Explorer - Tous droits réservés</p>
-      </footer>
+      <Footer /> {/* Utilisation du composant Footer */}
     </div>
   );
 }
