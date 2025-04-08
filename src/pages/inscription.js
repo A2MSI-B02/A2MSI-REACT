@@ -59,17 +59,17 @@ const Inscription = () => {
                 role,
             });
 
-            // Redirection en fonction du rôle
-            if (role === "admin") {
-                navigate("/admindashboard");
+            // Redirection selon le rôle
+            sessionStorage.setItem("userRole", role);
+            if (role === "user") {
+                navigate("/userdashboard");
             } else if (role === "pro") {
                 navigate("/prodashboard");
-            } else {
-                navigate("/userdashboard");
+            } else if (role === "admin") {
+                navigate("/admindashboard");
             }
-        } catch (err) {
-            setError("Une erreur est survenue lors de l'inscription. Veuillez réessayer.");
-            console.error(err);
+        } catch (error) {
+            setError(error.message);
         }
     };
 
