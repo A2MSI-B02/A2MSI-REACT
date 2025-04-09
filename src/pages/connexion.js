@@ -4,7 +4,6 @@ import { auth, database } from "../firebaseConfig"; // Import Firebase
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { ref, get } from "firebase/database";
 import { Container, Form, Button } from "react-bootstrap";
-import Footer from "../components/footer";
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -12,14 +11,17 @@ const Login = () => {
     const [error, setError] = useState("");
     const navigate = useNavigate();
 
+    // Soumission du formulaire
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
 
         try {
+            // Connexion Firebase Auth
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const userId = userCredential.user.uid;
 
+            // Récupération du rôle depuis la base de données
             const userRef = ref(database, "users/" + userId);
             const snapshot = await get(userRef);
             const userData = snapshot.val();
@@ -28,6 +30,7 @@ const Login = () => {
                 sessionStorage.setItem("userFirstName", userData.firstName);
                 sessionStorage.setItem("userRole", userData.role);
 
+                // Redirection selon le rôle
                 if (userData.role === "Utilisateur") {
                     navigate("/userdashboard");
                 } else if (userData.role === "Professionnel") {
@@ -42,7 +45,6 @@ const Login = () => {
     };
 
     return (
-        <div>
         <Container className="mt-5">
             <h2 className="text-center">Connexion</h2>
             {error && <p className="text-center text-danger">{error}</p>}
@@ -63,8 +65,6 @@ const Login = () => {
                 <p className="mb-0">Pas encore membre ? <a href="/inscription">S'inscrire</a></p>
             </div>
         </Container>
-        <Footer /> {/* Utilisation du composant Footer */}
-        </div>
     );
 };
 
