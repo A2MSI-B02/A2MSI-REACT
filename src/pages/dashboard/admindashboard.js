@@ -3,8 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { auth } from "../../firebaseConfig"; // S'assurer que Firebase est correctement configuré
 import { Container, Button } from "react-bootstrap";
 import Footer from "../../components/footer";
-import UserProfileIcon from "../../components/userprofileicon"; // Nouveau composant pour l'icône
-
 const AdminDashboard = () => {
     const navigate = useNavigate();
     const userFirstName = sessionStorage.getItem("userFirstName");
@@ -19,8 +17,6 @@ const AdminDashboard = () => {
     return (
         <div>
             <Container className="mt-5">
-                {/* Ajout de l'icône de la photo de profil */}
-                <UserProfileIcon />
 
                 {/* Message de bienvenue */}
                 <h2>Bienvenue, {userFirstName} ! 😊</h2>

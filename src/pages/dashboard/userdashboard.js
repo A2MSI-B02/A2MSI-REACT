@@ -2,7 +2,6 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../../firebaseConfig"; // Firebase doit être correctement configuré
 import { Container, Button } from "react-bootstrap";
-import UserProfileIcon from "../../components/userprofileicon"; // Composant pour la photo de profil
 
 const UserDashboard = () => {
     const navigate = useNavigate();
@@ -17,8 +16,6 @@ const UserDashboard = () => {
 
     return (
         <Container className="mt-5">
-            {/* Icône/photo de profil */}
-            <UserProfileIcon />
 
             {/* Message de bienvenue */}
             <h2>Bienvenue, {userFirstName} ! 😊</h2>
