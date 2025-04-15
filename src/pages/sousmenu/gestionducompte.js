@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { auth, db, storage } from '../../firebaseConfig'; // Importer les instances Firebase
-import { updatePassword, updateProfile } from 'firebase/auth';
+import { auth, db, storage } from '../../firebaseConfig';
+import { updatePassword } from 'firebase/auth';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
@@ -11,64 +11,57 @@ const GestionDuCompte = () => {
   const [profilePicUrl, setProfilePicUrl] = useState('');
   const [description, setDescription] = useState('');
 
-  // Charger les données utilisateur au montage du composant
   useEffect(() => {
     const fetchUserData = async () => {
-      const userId = auth.currentUser.uid; // Récupérer l'utilisateur connecté
-      const docRef = doc(db, 'users', userId); // Remplace "users" par ta collection utilisateur
-      const docSnap = await getDoc(docRef);
+      try {
+        const userId = auth.currentUser.uid;
+        const docRef = doc(db, 'users', userId);
+        const docSnap = await getDoc(docRef);
 
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        setUser(data);
-        if (data.profilePicUrl) setProfilePicUrl(data.profilePicUrl);
-        setDescription(data.description || ''); // Si la description n'existe pas, utilise une chaîne vide
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setUser(data);
+          setProfilePicUrl(data.profilePicUrl || '');
+          setDescription(data.description || '');
+        }
+      } catch (error) {
+        console.error('Erreur lors du chargement des données utilisateur :', error.message);
       }
     };
 
     fetchUserData();
   }, []);
 
-  // Mettre à jour le mot de passe
   const handlePasswordUpdate = async (e) => {
     e.preventDefault();
+    if (!password) return alert('Veuillez entrer un mot de passe.');
     try {
       await updatePassword(auth.currentUser, password);
       alert('Mot de passe mis à jour avec succès !');
       setPassword('');
     } catch (error) {
-      console.error('Erreur lors de la mise à jour du mot de passe :', error.message);
-      alert('Impossible de changer le mot de passe. Vérifiez votre saisie.');
+      console.error('Erreur :', error.message);
+      alert('Impossible de changer le mot de passe.');
     }
   };
 
-  // Mettre à jour la photo de profil
   const handleProfilePicUpdate = async () => {
-    if (!profilePic) {
-      alert('Veuillez sélectionner une photo de profil.');
-      return;
-    }
-
+    if (!profilePic) return alert('Veuillez sélectionner une photo de profil.');
     try {
       const userId = auth.currentUser.uid;
-      const storageRef = ref(storage, `profilePictures/${userId}`); // Emplacement dans Firebase Storage
-      await uploadBytes(storageRef, profilePic); // Upload de l'image
-      const downloadUrl = await getDownloadURL(storageRef); // Récupérer l'URL de l'image
+      const storageRef = ref(storage, `profilePictures/${userId}`);
+      await uploadBytes(storageRef, profilePic);
+      const downloadUrl = await getDownloadURL(storageRef);
 
-      // Mettre à jour dans Firestore
-      const userDocRef = doc(db, 'users', userId);
-      await updateDoc(userDocRef, { profilePicUrl: downloadUrl });
-
-      // Mettre à jour l'état pour refléter les modifications
+      await updateDoc(doc(db, 'users', userId), { profilePicUrl: downloadUrl });
       setProfilePicUrl(downloadUrl);
       alert('Photo de profil mise à jour avec succès !');
     } catch (error) {
-      console.error('Erreur lors de la mise à jour de la photo de profil :', error.message);
+      console.error('Erreur :', error.message);
       alert('Impossible de mettre à jour la photo de profil.');
     }
   };
 
-  // Mettre à jour la description
   const handleDescriptionUpdate = async () => {
     try {
       const userId = auth.currentUser.uid;
@@ -134,5 +127,4 @@ const GestionDuCompte = () => {
     </div>
   );
 };
-
 export default GestionDuCompte;

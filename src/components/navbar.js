@@ -58,6 +58,7 @@ const MyNavbar = () => {
                 {userRole === "Professionnel" && (
                   <Nav.Link as={Link} to="/prodashboard">Mon compte (Professionnel)</Nav.Link>
                 )}
+                <Nav.Link onClick={handleLogout}>Déconnexion</Nav.Link>
               </>
             ) : (
               <Nav.Link as={Link} to="/Connexion">Connexion</Nav.Link>
