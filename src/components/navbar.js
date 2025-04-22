@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Navbar, Nav, Container } from "react-bootstrap";
+import { Navbar, Nav, Container, Button } from "react-bootstrap"; // Import du composant Button
 import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../firebaseConfig"; // Firebase config importée depuis votre fichier firebase.js
 import { onAuthStateChanged, signOut } from "firebase/auth";
@@ -79,7 +79,10 @@ const MyNavbar = () => {
                 {userRole === "Professionnel" && (
                   <Nav.Link as={Link} to="/prodashboard">Mon compte (Professionnel)</Nav.Link>
                 )}
-                <Nav.Link onClick={handleLogout}>Déconnexion</Nav.Link>
+                {/* Bouton graphique pour la déconnexion */}
+                <Button variant="outline-light" onClick={handleLogout} className="ms-2">
+                  Déconnexion
+                </Button>
               </>
             ) : (
               <Nav.Link as={Link} to="/Connexion">Connexion</Nav.Link>
