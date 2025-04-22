@@ -65,7 +65,7 @@ const MyNavbar = () => {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
             <Nav.Link as={Link} to="/">Accueil</Nav.Link>
-            <Nav.Link as={Link} to="/destinations">Destinations</Nav.Link>
+            <Nav.Link as={Link} to="/destination">Destinations</Nav.Link>
             <Nav.Link as={Link} to="/service-client">Service Client</Nav.Link>
 
             {currentUser ? (
