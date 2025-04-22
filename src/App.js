@@ -11,6 +11,8 @@ import UserDashboard from "./pages/dashboard/userdashboard";
 import ProDashboard from "./pages/dashboard/prodashboard";
 import AdminDashboard from "./pages/dashboard/admindashboard";
 import GestionDuCompte from './pages/sousmenu/gestionducompte';
+import Favoris from './pages/sousmenu/favoris';
+import Voyages from './pages/sousmenu/voyages';
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -28,6 +30,8 @@ function App() {
         <Route path="/prodashboard" element={<ProDashboard />} />
         <Route path="/admindashboard" element={<AdminDashboard />} />
         <Route path="/gestionducompte" element={<GestionDuCompte />} />
+        <Route path="/favoris" element={<Favoris/>} />
+        <Route path="/voyages" element={<Voyages/>} />
       </Routes>
     </Router>
   );

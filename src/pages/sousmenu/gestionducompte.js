@@ -78,7 +78,6 @@ const GestionDuCompte = () => {
   return (
     <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
       <h1>Gestion du compte</h1>
-
       {user && (
         <div>
           <div>
