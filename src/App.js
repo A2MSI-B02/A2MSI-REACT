@@ -13,6 +13,7 @@ import AdminDashboard from "./pages/dashboard/admindashboard";
 import GestionDuCompte from './pages/sousmenu/gestionducompte';
 import Favoris from './pages/sousmenu/favoris';
 import Voyages from './pages/sousmenu/voyages';
+import UserSettings from './pages/dashboard/UserSettings'; 
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -21,7 +22,7 @@ function App() {
     <Router>
       <Navbar />
       <Routes> {/* Utilisez Routes ici */}
-        <Route path="/" element={<Accueil />} exact /> {/* Utilisez element au lieu de component */}
+        <Route path="/" element={<Accueil />} exact /> 
         <Route path="/destination" element={<Destination />} />
         <Route path="/connexion" element={<Connexion />} />
         <Route path="/inscription" element={<Inscription />} />
@@ -32,6 +33,7 @@ function App() {
         <Route path="/gestionducompte" element={<GestionDuCompte />} />
         <Route path="/favoris" element={<Favoris/>} />
         <Route path="/voyages" element={<Voyages/>} />
+        <Route path="/usersettings" element={<UserSettings />} /> 
       </Routes>
     </Router>
   );

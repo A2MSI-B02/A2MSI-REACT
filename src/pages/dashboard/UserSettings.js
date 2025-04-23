@@ -4,6 +4,7 @@ import { auth, db, storage } from "../../firebaseConfig";
 import { updatePassword } from "firebase/auth";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { useNavigate } from "react-router-dom";
 
 const UserSettings = () => {
     const [user, setUser] = useState(null);
@@ -11,6 +12,13 @@ const UserSettings = () => {
     const [profilePic, setProfilePic] = useState(null);
     const [profilePicUrl, setProfilePicUrl] = useState("");
     const [description, setDescription] = useState("");
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!auth.currentUser) {
+            navigate("/connexion"); // Redirige vers la page de connexion
+        }
+    }, [navigate]); // Ajout de 'navigate' dans le tableau des dépendances
 
     useEffect(() => {
         const fetchUserData = async () => {
