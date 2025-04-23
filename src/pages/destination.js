@@ -1,6 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
-import Footer from '../components/footer'; // Adapte selon ton architecture
+import Footer from '../components/footer';
+import HeartFav from '../components/HeartFav'; 
 
+const FAV_STORAGE_KEY = "a2msi_favs";
 const CENTER = { lat: 48.8566, lng: 2.3522 }; // Paris
 const MAP_HEIGHT = "70vh";
 
@@ -32,7 +34,7 @@ function renderOpenClosed(opening_hours) {
 }
 
 // Overlay panneau de détail lieu
-function PlaceDetailsPanel({ place, onClose }) {
+function PlaceDetailsPanel({ place, onClose, isFavorite, toggleFav }) { // <--- AJOUT/EDITE
   if (!place) return null;
   const photoUrl = place.photos?.[0]?.getUrl
     ? place.photos[0].getUrl({ maxWidth: 320, maxHeight: 180 })
@@ -42,8 +44,7 @@ function PlaceDetailsPanel({ place, onClose }) {
   return (
     <div style={{
       width: 340, background: '#fff', boxShadow: '0 4px 24px #0001',
-      borderRadius: 17, padding: 18, zIndex: 120,
-      position: "relative", color: "#000"
+      borderRadius: 17, padding: 18, zIndex: 120, position: "relative", color: "#000"
     }}>
       <button onClick={onClose}
         style={{
@@ -55,10 +56,16 @@ function PlaceDetailsPanel({ place, onClose }) {
       {photoUrl &&
         <img src={photoUrl} alt="" style={{ width: "100%", borderRadius: 11, marginBottom: 15, maxHeight: 160, objectFit: 'cover' }} />
       }
-      <div style={{ fontWeight: 600, fontSize: 22, lineHeight: 1.25, marginBottom: 5, color: "#000" }}>{place.name}</div>
+      <div style={{ display: "flex", alignItems: "center", marginBottom: 5 }}>
+        <div style={{ fontWeight: 600, fontSize: 22, lineHeight: 1.25, color: "#000" }}>{place.name}</div>
+        {/* -- COEUR SUR DETAIL -- */}
+        <HeartFav
+          isFav={isFavorite(place)}
+          onClick={() => toggleFav(place)}
+        />
+      </div>
       <div style={{ fontSize: 15, color: "#000" }}>
-        {renderStars(place.rating)}
-        <span>({place.user_ratings_total ?? 0})</span>
+        {renderStars(place.rating)}<span>({place.user_ratings_total ?? 0})</span>
         {place.price_level && <span> · {getPriceLevel(place.price_level)}</span>}
       </div>
       <div style={{ fontSize: 14, color: '#000', marginBottom: 6 }}>
@@ -101,6 +108,38 @@ export default function MapPage() {
   const [markers, setMarkers] = useState([]);
   const [selectedPlaceDetail, setSelectedPlaceDetail] = useState(null);
   const [showResults, setShowResults] = useState(false);
+
+// FAVORIS: État local & synchronisation stockage
+const [favorites, setFavorites] = useState(() => {
+  try {
+    return JSON.parse(localStorage.getItem(FAV_STORAGE_KEY)) || [];
+  } catch (e) {
+    return [];
+  }
+});
+function isFavorite(place) {
+  return favorites.some(f => f.place_id === place.place_id);
+}
+function toggleFav(place) {
+  let newFavs;
+  if (isFavorite(place)) {
+    newFavs = favorites.filter(f => f.place_id !== place.place_id);
+  } else {
+    // On stocke l'objet directement, mais on pourrait stocker juste l'id
+    newFavs = [...favorites, place];
+  }
+  setFavorites(newFavs);
+  localStorage.setItem(FAV_STORAGE_KEY, JSON.stringify(newFavs));
+}
+useEffect(() => {
+  const syncFavs = e => {
+    if (e.key === FAV_STORAGE_KEY) {
+      setFavorites(JSON.parse(e.newValue || "[]"));
+    }
+  };
+  window.addEventListener("storage", syncFavs);
+  return () => window.removeEventListener("storage", syncFavs);
+}, []);
 
   // Chargement dynamique Google Maps JS API
   useEffect(() => {
@@ -323,6 +362,11 @@ export default function MapPage() {
                       <span>{place.vicinity || place.formatted_address}</span>
                     </div>
                   </div>
+                  {/* ------ LE COEUR FAVORI ICI ------ */}
+                  <HeartFav
+                    isFav={isFavorite(place)}
+                    onClick={() => toggleFav(place)}
+                  />
                 </li>
               )
             )}
@@ -333,7 +377,12 @@ export default function MapPage() {
       {/* Overlay Détail */}
       {selectedPlaceDetail && (
         <div style={{ position: "absolute", top: 55, right: 45, zIndex: 100 }}>
-          <PlaceDetailsPanel place={selectedPlaceDetail} onClose={handleCloseDetails} />
+          <PlaceDetailsPanel 
+          place={selectedPlaceDetail} 
+          onClose={handleCloseDetails} 
+          isFavorite={isFavorite}
+          toggleFav={toggleFav}
+          />
         </div>
       )}
 
