@@ -50,7 +50,6 @@ function Accueil() {
 
         <div className="cards-container mt-5">
           {cities.map((city, index) => (
-          {['New York', 'Bangkok', 'Hanoï', 'Porto', 'Barcelone'].map((destination, index) => (
             <div key={index} className={`card card-${index + 1}`}>
               <div className="card-content">
                 <h3 className="card-title">{city.name}</h3>
