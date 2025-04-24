@@ -38,7 +38,7 @@ function Accueil() {
         </div>
 
         <div className="cards-container mt-5">
-          {['New York', 'Bangkok', 'Hanoï', 'Le Pirée', 'Barcelone'].map((destination, index) => (
+          {['New York', 'Bangkok', 'Hanoï', 'Porto', 'Barcelone'].map((destination, index) => (
             <div key={index} className={`card card-${index + 1}`}>
               <div className="card-content">
                 <h3 className="card-title">{destination}</h3>
