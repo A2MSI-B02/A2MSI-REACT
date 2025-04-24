@@ -1,6 +1,11 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Footer from '../components/footer';
 import HeartFav from '../components/HeartFav'; 
+import { useLocation } from "react-router-dom";
+
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
 
 const FAV_STORAGE_KEY = "a2msi_favs";
 const CENTER = { lat: 48.8566, lng: 2.3522 }; // Paris
@@ -102,6 +107,8 @@ export default function MapPage() {
   const mapRef = useRef(null);
   const [googleReady, setGoogleReady] = useState(false);
   const [map, setMap] = useState(null);
+  const queryParams = useQuery();
+  const selectedPlaceIdFromUrl = queryParams.get("placeId");
 
   const [query, setQuery] = useState(() => localStorage.getItem('searchQuery') || ''); // Récupère la recherche
   const [coordinates, setCoordinates] = useState(() => {
@@ -136,9 +143,11 @@ const [favorites, setFavorites] = useState(() => {
     return [];
   }
 });
+
 function isFavorite(place) {
   return favorites.some(f => f.place_id === place.place_id);
 }
+
 function toggleFav(place) {
   let newFavs;
   if (isFavorite(place)) {
@@ -150,6 +159,8 @@ function toggleFav(place) {
   setFavorites(newFavs);
   localStorage.setItem(FAV_STORAGE_KEY, JSON.stringify(newFavs));
 }
+
+// Synchronisation avec le stockage local
 useEffect(() => {
   const syncFavs = e => {
     if (e.key === FAV_STORAGE_KEY) {
@@ -159,6 +170,21 @@ useEffect(() => {
   window.addEventListener("storage", syncFavs);
   return () => window.removeEventListener("storage", syncFavs);
 }, []);
+
+useEffect(() => {
+  // Vérifie s'il y a placeId dans l'URL
+  if (selectedPlaceIdFromUrl) {
+    // Cherche le lieu correspondant dans la liste (dans les favoris, au pire !)
+    let found;
+    found = places.find(p => p.place_id === selectedPlaceIdFromUrl);
+    if (!found) {
+      // Fallback : parmi tes favoris
+      found = favorites.find(f => f.place_id === selectedPlaceIdFromUrl);
+    }
+    if (found) setSelectedPlaceDetail(found);
+  }
+// Ajoute bien deps sur [selectedPlaceIdFromUrl, places, favorites]
+}, [selectedPlaceIdFromUrl, places, favorites]);
 
   // Chargement dynamique Google Maps JS API
   useEffect(() => {
@@ -185,13 +211,7 @@ useEffect(() => {
       fullscreenControl: false,
     });
 
-    // À chaque mouvement ou zoom, tu peux relancer la recherche (si un mot-clé est saisi)
-  m.addListener('idle', () => {
-    if (query) {
-      // (optionnel: limiter la fréquence avec un debounce)
-      handleSearch({ preventDefault: () => {} }); // fake event
-    }
-  });
+    
     setMap(m);
   }, [googleReady, coordinates]);
 
