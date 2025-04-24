@@ -39,7 +39,7 @@ function renderOpenClosed(opening_hours) {
 }
 
 // Overlay panneau de détail lieu
-function PlaceDetailsPanel({ place, onClose, isFavorite, toggleFav }) { // <--- AJOUT/EDITE
+function PlaceDetailsPanel({ place, onClose, isFavorite, toggleFav }) {
   if (!place) return null;
   const photoUrl = place.photos?.[0]?.getUrl
     ? place.photos[0].getUrl({ maxWidth: 320, maxHeight: 180 })
@@ -63,7 +63,6 @@ function PlaceDetailsPanel({ place, onClose, isFavorite, toggleFav }) { // <--- 
       }
       <div style={{ display: "flex", alignItems: "center", marginBottom: 5 }}>
         <div style={{ fontWeight: 600, fontSize: 22, lineHeight: 1.25, color: "#000" }}>{place.name}</div>
-        {/* -- COEUR SUR DETAIL -- */}
         <HeartFav
           isFav={isFavorite(place)}
           onClick={() => toggleFav(place)}
@@ -110,29 +109,19 @@ export default function MapPage() {
   const queryParams = useQuery();
   const selectedPlaceIdFromUrl = queryParams.get("placeId");
 
-  const [query, setQuery] = useState(() => localStorage.getItem('searchQuery') || ''); // Récupère la recherche
-  const [coordinates, setCoordinates] = useState(() => {
-    const coords = localStorage.getItem('searchCoordinates');
-    return coords ? JSON.parse(coords) : null;
-  });
+  const [query, setQuery] = useState(''); // Supprime la récupération automatique de la recherche
+  const [coordinates, setCoordinates] = useState(null); // Supprime la récupération automatique des coordonnées
   const [places, setPlaces] = useState([]);
   const [markers, setMarkers] = useState([]);
   const [selectedPlaceDetail, setSelectedPlaceDetail] = useState(null);
   const [showResults, setShowResults] = useState(false);
 
-  useEffect(() => {
-    if (query) {
-      handleSearch({ preventDefault: () => {} }); // Effectue une recherche automatique si une ville est sélectionnée
-    }
-    localStorage.removeItem('searchQuery'); // Nettoie après récupération
-  }, [query]);
-
+  // Supprime l'appel automatique à handleSearch
   useEffect(() => {
     if (coordinates && map) {
       map.setCenter(coordinates); // Recentre la carte sur les coordonnées
       map.setZoom(12); // Ajuste le zoom
     }
-    localStorage.removeItem('searchCoordinates'); // Nettoie après utilisation
   }, [coordinates, map]);
 
 // FAVORIS: État local & synchronisation stockage
@@ -159,6 +148,26 @@ function toggleFav(place) {
   setFavorites(newFavs);
   localStorage.setItem(FAV_STORAGE_KEY, JSON.stringify(newFavs));
 }
+
+// Permet de géocoder une adresse et centrer/zoomer la map
+async function geocodeAndCenter(address) {
+  if (!window.google || !window.google.maps || !map) return;
+  return new Promise((resolve, reject) => {
+    const geocoder = new window.google.maps.Geocoder();
+    geocoder.geocode({ address }, (results, status) => {
+      if (status === "OK" && results[0]) {
+        const loc = results[0].geometry.location;
+        map.panTo(loc);
+        map.setZoom(13); // ou + si tu veux être plus ou moins près
+        resolve(results[0]);
+      } else {
+        alert("Adresse ou ville introuvable !");
+        reject(status);
+      }
+    });
+  });
+}
+
 
 // Synchronisation avec le stockage local
 useEffect(() => {
@@ -221,23 +230,24 @@ useEffect(() => {
     setMarkers([]);
   }
 
-  // Recherche places (PlacesService.nearbySearch + filtrage)
-  const handleSearch = (e) => {
+  const handleSearch = async (e) => {
     e.preventDefault();
     if (!map || !query) return;
     clearMarkers();
     setPlaces([]);
     setSelectedPlaceDetail(null);
     setShowResults(true);
-
+  
     const service = new window.google.maps.places.PlacesService(map);
     const req = {
       bounds: map.getBounds(),
       keyword: query
     };
-    service.nearbySearch(req, (results, status) => {
-      if (status !== window.google.maps.places.PlacesServiceStatus.OK || !results) {
+    service.nearbySearch(req, async (results, status) => {
+      if (status !== window.google.maps.places.PlacesServiceStatus.OK || !results || results.length === 0) {
         setPlaces([]);
+        // ICI : fallback géocodage !
+        await geocodeAndCenter(query);
         return;
       }
       const resultsOk = results.filter(p => !!p && !!p.place_id);
@@ -264,6 +274,7 @@ useEffect(() => {
       }
     });
   };
+  
 
   // Affiche détail d’un lieu
   function handleShowDetails(placeId) {
@@ -401,7 +412,6 @@ useEffect(() => {
                       <span>{place.vicinity || place.formatted_address}</span>
                     </div>
                   </div>
-                  {/* ------ LE COEUR FAVORI ICI ------ */}
                   <HeartFav
                     isFav={isFavorite(place)}
                     onClick={() => toggleFav(place)}
