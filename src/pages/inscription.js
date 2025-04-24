@@ -13,6 +13,7 @@ const Inscription = () => {
         role: "Utilisateur", // Valeur par défaut
         password: "",
         confirmPassword: "",
+        description: "", // Ajout du champ description
     });
 
     const [error, setError] = useState("");
@@ -45,6 +46,7 @@ const Inscription = () => {
                 lastName: formData.lastName,
                 email: formData.email,
                 role: formData.role,
+                description: formData.description, // Sauvegarde de la description
             });
 
             // Redirection selon le rôle
@@ -87,6 +89,17 @@ const Inscription = () => {
                         <option value="Utilisateur">Utilisateur</option>
                         <option value="Professionnel">Professionnel</option>
                     </Form.Select>
+                </Form.Group>
+
+                <Form.Group>
+                    <Form.Label>Que cherchez-vous ?</Form.Label>
+                    <Form.Control
+                        as="textarea"
+                        name="description"
+                        rows={3}
+                        placeholder="Ajoutez une description..."
+                        onChange={handleChange}
+                    />
                 </Form.Group>
 
                 <Form.Group>

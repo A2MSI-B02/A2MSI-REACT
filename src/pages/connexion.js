@@ -51,12 +51,24 @@ const Login = () => {
             <Form onSubmit={handleSubmit} className="mx-auto" style={{ maxWidth: "400px" }}>
                 <Form.Group>
                     <Form.Label>Email</Form.Label>
-                    <Form.Control type="email" required onChange={(e) => setEmail(e.target.value)} />
+                    <Form.Control
+                        type="email"
+                        name="email"
+                        autoComplete="email"
+                        required
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
                 </Form.Group>
 
                 <Form.Group>
                     <Form.Label>Mot de passe</Form.Label>
-                    <Form.Control type="password" required onChange={(e) => setPassword(e.target.value)} />
+                    <Form.Control
+                        type="password"
+                        name="password"
+                        autoComplete="current-password"
+                        required
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
                 </Form.Group>
 
                 <Button variant="primary" type="submit" className="mt-3 w-100">Se connecter</Button>

@@ -1,0 +1,31 @@
+.custom-card {
+    background-color: rgba(13, 110, 253, 0.8);
+    color: #fff;
+    width: 300px;
+    height: 400px;
+    padding: 20px;
+    border-radius: 15px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.custom-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.profile-pic {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #fff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.text-white {
+    color: #ffffff;
+}
+
+.text-light {
+    color: #f8f9fa;
+}
