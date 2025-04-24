@@ -44,7 +44,7 @@ function PlaceDetailsPanel({ place, onClose, isFavorite, toggleFav }) { // <--- 
   const photoUrl = place.photos?.[0]?.getUrl
     ? place.photos[0].getUrl({ maxWidth: 320, maxHeight: 180 })
     : place.photos?.[0]?.photo_reference
-      ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=320&photoreference=${place.photos[0].photo_reference}&key=VOTRE_CLE_API`
+      ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=320&photoreference=${place.photos[0].photo_reference}&key=AIzaSyCRXfz02kudZpFDr4ogAmdA7BVm5AnUMuc`
       : null;
   return (
     <div style={{
