@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/accueil.css';
@@ -7,6 +7,7 @@ import Footer from '../components/footer';
 
 function Accueil() {
   const navigate = useNavigate();
+  const [userLocation, setUserLocation] = useState(null); // État pour stocker la position de l'utilisateur
 
   const cities = [
     { name: 'New York', lat: 40.7128, lng: -74.0060 },
@@ -32,6 +33,24 @@ function Accueil() {
     navigate('/destination'); // Redirection vers la page "Destinations"
   };
 
+  const handleGeolocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setUserLocation({ lat: latitude, lng: longitude });
+          alert(`Votre position actuelle : Latitude ${latitude}, Longitude ${longitude}`);
+        },
+        (error) => {
+          console.error("Erreur lors de la récupération de la géolocalisation :", error);
+          alert("Impossible de récupérer votre position. Veuillez vérifier vos paramètres de localisation.");
+        }
+      );
+    } else {
+      alert("La géolocalisation n'est pas prise en charge par votre navigateur.");
+    }
+  };
+
   return (
     <div>
       <header className="text-center my-5">
@@ -46,6 +65,20 @@ function Accueil() {
             <h2>Planifier un roadtrip</h2>
             <input type="text" id="search" className="form-control" placeholder="Entrez une ville..." />
             <button className="btn btn-primary mt-2" onClick={searchDestination}>Rechercher</button>
+          </div>
+        </div>
+
+        {/* Bouton de géolocalisation */}
+        <div className="row centered-row mt-4">
+          <div className="col-md-6">
+            <button className="btn btn-secondary" onClick={handleGeolocation}>
+              Utiliser ma position actuelle
+            </button>
+            {userLocation && (
+              <p className="mt-2">
+                Votre position : Latitude {userLocation.lat}, Longitude {userLocation.lng}
+              </p>
+            )}
           </div>
         </div>
 

@@ -3,6 +3,13 @@ import emailjs from '@emailjs/browser'; // Import EmailJS
 import Footer from '../components/footer'; // Import du composant Footer
 import '../styles/ServiceClient.css'; // Assurez-vous que le chemin est correct
 
+const sendReceipt = (userEmail, reservationDetails) => {
+  emailjs.send("service_id", "template_id", {
+    to_email: userEmail,
+    reservation_details: JSON.stringify(reservationDetails),
+  });
+};
+
 function ServiceClient() {
   const formRef = useRef(); // Référence au formulaire
   const [isSending, setIsSending] = useState(false); // État pour le bouton d'envoi

@@ -221,16 +221,15 @@ useEffect(() => {
   useEffect(() => {
     if (!googleReady) return;
     const m = new window.google.maps.Map(mapRef.current, {
-      center: coordinates || CENTER,
+      center: CENTER, // Coordonnées par défaut
       zoom: 12,
       mapTypeControl: false,
       streetViewControl: false,
       fullscreenControl: false,
     });
 
-    
     setMap(m);
-  }, [googleReady, coordinates]);
+  }, [googleReady]);
 
   // Efface marqueurs anciennes recherches
   function clearMarkers() {
@@ -312,6 +311,36 @@ useEffect(() => {
   const handleCloseDetails = () => setSelectedPlaceDetail(null);
   const handleCloseResults = () => setShowResults(false);
 
+  const handleGeolocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+
+          // Centrer la carte sur la position actuelle
+          if (map) {
+            const userLocation = new window.google.maps.LatLng(latitude, longitude);
+            map.panTo(userLocation);
+            map.setZoom(14);
+
+            // Ajouter un marqueur pour la position actuelle
+            new window.google.maps.Marker({
+              position: userLocation,
+              map,
+              title: "Vous êtes ici",
+            });
+          }
+        },
+        (error) => {
+          console.error("Erreur lors de la récupération de la géolocalisation :", error);
+          alert("Impossible de récupérer votre position. Veuillez vérifier vos paramètres de localisation.");
+        }
+      );
+    } else {
+      alert("La géolocalisation n'est pas prise en charge par votre navigateur.");
+    }
+  };
+
   return (
     <div style={{ minHeight: '100vh', position: "relative", background: "#f6f8fa", color: "#000" }}>
       {/* Barre de recherche overlay, fixe */}
@@ -353,6 +382,14 @@ useEffect(() => {
           Chercher
         </button>
       </form>
+
+      <div className="row centered-row mt-4">
+        <div className="col-md-6">
+          <button className="btn btn-secondary" onClick={handleGeolocation}>
+            Utiliser ma position actuelle
+          </button>
+        </div>
+      </div>
 
       {/* Overlay résultats (menu flottant) */}
       {showResults && (
