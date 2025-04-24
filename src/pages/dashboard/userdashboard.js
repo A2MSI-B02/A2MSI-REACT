@@ -2,13 +2,12 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../../firebaseConfig"; // Firebase doit être correctement configuré
 import { Container, Button, Card, Row, Col } from "react-bootstrap";
-import { FaUser, FaHeart, FaPlane, FaSignOutAlt } from "react-icons/fa";
+import { FaUser, FaHeart, FaSignOutAlt } from "react-icons/fa";
 import { signOut } from "firebase/auth"; // Importez signOut de firebase/auth
 import Footer from '../../components/footer'; // Import du composant Footer
 
 const UserDashboard = () => {
     const navigate = useNavigate();
-    const userFirstName = sessionStorage.getItem("userFirstName");
 
     const handleLogout = async () => {
         console.log("Début de la déconnexion...");
@@ -25,7 +24,6 @@ const UserDashboard = () => {
     // Fonctions pour rediriger vers différentes pages
     const goToGestionCompte = () => navigate("/UserSettings");
     const goToFavoris = () => navigate("/favoris");
-    const goToVoyages = () => navigate("/voyages");
 
     return (
         <>

@@ -110,7 +110,7 @@ export default function MapPage() {
   const selectedPlaceIdFromUrl = queryParams.get("placeId");
 
   const [query, setQuery] = useState(() => localStorage.getItem('searchQuery') || ''); // Récupère la recherche
-  const [coordinates, setCoordinates] = useState(() => {
+  const [coordinates] = useState(() => {
     const coords = localStorage.getItem('searchCoordinates');
     return coords ? JSON.parse(coords) : null;
   }); // Supprime la récupération automatique des coordonnées

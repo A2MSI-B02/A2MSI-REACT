@@ -1,57 +1,51 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Container, Button, ListGroup } from "react-bootstrap";
-import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
-import Footer from '../../components/footer';
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import Footer from "../../components/footer";
 
-const ViewServices = () => {
-    const navigate = useNavigate();
-    const [services, setServices] = useState([]);
+export default function MesActivites() {
+  const [activities, setActivities] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    const fetchServices = async () => {
-        const querySnapshot = await getDocs(collection(db, "Services"));
-        const servicesData = [];
-        querySnapshot.forEach((doc) => {
-            servicesData.push({ id: doc.id, ...doc.data() });
-        });
-        setServices(servicesData);
+  useEffect(() => {
+    const fetch = async () => {
+      setLoading(true);
+      const auth = getAuth();
+      const user = auth.currentUser;
+      if (!user) { setActivities([]); setLoading(false); return; }
+      const q = query(
+        collection(db, "activities"),
+        where("ownerUid", "==", user.uid)
+      );
+      const snap = await getDocs(q);
+      setActivities(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      setLoading(false);
     };
+    fetch();
+  }, []);
 
-    useEffect(() => {
-        fetchServices();
-    }, []);
-
-    return (
-        <>
-            <Container className="mt-5">
-                <h2 className="text-center mb-4">Mes Services</h2>
-                <ListGroup>
-                    {services.map((service) => (
-                        <ListGroup.Item key={service.id}>
-                            <h5>{service.name}</h5>
-                            <p>{service.description}</p>
-                        </ListGroup.Item>
-                    ))}
-                </ListGroup>
-                <div className="text-center mt-5">
-                    <Button
-                        onClick={() => navigate("/AddService")}
-                        style={{
-                            backgroundColor: "#0d6efd",
-                            borderColor: "#0d6efd",
-                            color: "#fff",
-                            cursor: "pointer",
-                            marginTop: "20px",
-                        }}
-                    >
-                        Ajouter un Nouveau Service
-                    </Button>
-                </div>
-            </Container>
-            <Footer />
-        </>
-    );
-};
-
-export default ViewServices;
+  return (
+    <div style={{ maxWidth: 800, margin: "auto", padding: 20 }}>
+      <h2>Mes activités</h2>
+      {loading && <div>Chargement…</div>}
+      {!loading && activities.length === 0 && <div>Aucune activité pour l’instant.</div>}
+      <ul>
+        {activities.map(act => (
+          <li key={act.id} style={{ marginBottom: 20, padding: 12, border: "1px solid #eee", borderRadius: 8, boxShadow: "0 2px 8px #0001" }}>
+            <strong>{act.name}</strong> — {act.address}<br/>
+            {act.website && <a href={act.website} rel="noopener noreferrer" target="_blank">Site</a>} <br/>
+            {act.phone && <>Tel.: {act.phone} <br/></>}
+            <em>Horaires :</em>
+            <ul>
+              {act.hours && Object.entries(act.hours).map(([day, hours]) =>
+                <li key={day}>{day.charAt(0).toUpperCase() + day.slice(1)} : {hours}</li>
+              )}
+            </ul>
+          </li>
+        ))}
+      </ul>
+      <Footer />
+    </div>
+  );
+}

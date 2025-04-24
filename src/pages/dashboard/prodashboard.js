@@ -24,8 +24,6 @@ const ProDashboard = () => {
 
     // Fonctions pour rediriger vers différentes pages
     const goToGestionCompte = () => navigate("/ProSettings");
-    const goToMesServices = () => navigate("/mes-services");
-    const goToAjouterService = () => navigate("/ajouter-service");
 
     return (
         <>
