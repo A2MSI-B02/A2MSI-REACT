@@ -103,11 +103,30 @@ export default function MapPage() {
   const [googleReady, setGoogleReady] = useState(false);
   const [map, setMap] = useState(null);
 
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState(() => localStorage.getItem('searchQuery') || ''); // Récupère la recherche
+  const [coordinates, setCoordinates] = useState(() => {
+    const coords = localStorage.getItem('searchCoordinates');
+    return coords ? JSON.parse(coords) : null;
+  });
   const [places, setPlaces] = useState([]);
   const [markers, setMarkers] = useState([]);
   const [selectedPlaceDetail, setSelectedPlaceDetail] = useState(null);
   const [showResults, setShowResults] = useState(false);
+
+  useEffect(() => {
+    if (query) {
+      handleSearch({ preventDefault: () => {} }); // Effectue une recherche automatique si une ville est sélectionnée
+    }
+    localStorage.removeItem('searchQuery'); // Nettoie après récupération
+  }, [query]);
+
+  useEffect(() => {
+    if (coordinates && map) {
+      map.setCenter(coordinates); // Recentre la carte sur les coordonnées
+      map.setZoom(12); // Ajuste le zoom
+    }
+    localStorage.removeItem('searchCoordinates'); // Nettoie après utilisation
+  }, [coordinates, map]);
 
 // FAVORIS: État local & synchronisation stockage
 const [favorites, setFavorites] = useState(() => {
@@ -159,8 +178,8 @@ useEffect(() => {
   useEffect(() => {
     if (!googleReady) return;
     const m = new window.google.maps.Map(mapRef.current, {
-      center: CENTER,
-      zoom: 15,
+      center: coordinates || CENTER,
+      zoom: 12,
       mapTypeControl: false,
       streetViewControl: false,
       fullscreenControl: false,
@@ -174,7 +193,7 @@ useEffect(() => {
     }
   });
     setMap(m);
-  }, [googleReady]);
+  }, [googleReady, coordinates]);
 
   // Efface marqueurs anciennes recherches
   function clearMarkers() {
