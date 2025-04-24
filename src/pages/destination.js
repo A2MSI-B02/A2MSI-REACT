@@ -109,12 +109,19 @@ export default function MapPage() {
   const queryParams = useQuery();
   const selectedPlaceIdFromUrl = queryParams.get("placeId");
 
-  const [query, setQuery] = useState(''); // Supprime la récupération automatique de la recherche
-  const [coordinates, setCoordinates] = useState(null); // Supprime la récupération automatique des coordonnées
+  const [query, setQuery] = useState(() => localStorage.getItem('searchQuery') || ''); // Récupère la recherche
+  const [coordinates, setCoordinates] = useState(() => {
+    const coords = localStorage.getItem('searchCoordinates');
+    return coords ? JSON.parse(coords) : null;
+  }); // Supprime la récupération automatique des coordonnées
   const [places, setPlaces] = useState([]);
   const [markers, setMarkers] = useState([]);
   const [selectedPlaceDetail, setSelectedPlaceDetail] = useState(null);
   const [showResults, setShowResults] = useState(false);
+
+  useEffect(() => {
+    localStorage.removeItem('searchQuery'); // Nettoie après récupération
+  }, []);
 
   // Supprime l'appel automatique à handleSearch
   useEffect(() => {
@@ -122,6 +129,7 @@ export default function MapPage() {
       map.setCenter(coordinates); // Recentre la carte sur les coordonnées
       map.setZoom(12); // Ajuste le zoom
     }
+    localStorage.removeItem('searchCoordinates'); // Nettoie après utilisation
   }, [coordinates, map]);
 
 // FAVORIS: État local & synchronisation stockage
@@ -232,6 +240,10 @@ useEffect(() => {
 
   const handleSearch = async (e) => {
     e.preventDefault();
+    if (!query.trim()) {
+      alert('Veuillez entrer une recherche.');
+      return;
+    }
     if (!map || !query) return;
     clearMarkers();
     setPlaces([]);

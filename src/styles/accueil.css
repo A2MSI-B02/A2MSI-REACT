@@ -35,6 +35,9 @@
 
 .card-title {
     color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
 }
 
 .card-1 { background-image: url('./Picture/istockphoto-1406960186-612x612.jpg'); }

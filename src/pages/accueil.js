@@ -1,12 +1,12 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom'; // Import du hook useNavigate
+import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../styles/accueil.css'; // Assurez-vous que le chemin est correct
+import '../styles/accueil.css';
 import 'leaflet/dist/leaflet.css';
-import Footer from '../components/footer'; // Import du composant Footer
+import Footer from '../components/footer';
 
 function Accueil() {
-  const navigate = useNavigate(); // Initialisation du hook useNavigate
+  const navigate = useNavigate();
 
   const cities = [
     { name: 'New York', lat: 40.7128, lng: -74.0060 },
@@ -40,6 +40,7 @@ function Accueil() {
       </header>
 
       <main className="container">
+        {/* Barre de recherche */}
         <div className="row centered-row">
           <div className="col-md-6">
             <h2>Planifier un roadtrip</h2>
@@ -48,6 +49,7 @@ function Accueil() {
           </div>
         </div>
 
+        {/* Cartes des villes */}
         <div className="cards-container mt-5">
           {cities.map((city, index) => (
             <div key={index} className={`card card-${index + 1}`}>
@@ -60,7 +62,7 @@ function Accueil() {
         </div>
       </main>
 
-      <Footer /> {/* Utilisation du composant Footer */}
+      <Footer />
     </div>
   );
 }
