@@ -1,5 +1,7 @@
 import React, { useRef, useState } from 'react';
 import emailjs from '@emailjs/browser'; // Import EmailJS
+import Footer from '../components/footer'; // Import du composant Footer
+import '../styles/ServiceClient.css'; // Assurez-vous que le chemin est correct
 
 function ServiceClient() {
   const formRef = useRef(); // Référence au formulaire
@@ -63,65 +65,68 @@ function ServiceClient() {
   };
 
   return (
-    <div className="container mt-5">
-      <h1 className="text-center mb-4">Service Client</h1>
-      <p className="text-center">
-        Vous avez une question ou besoin d'aide ? Remplissez le formulaire ci-dessous et notre équipe vous répondra dans les plus brefs délais.
-      </p>
-      <form ref={formRef} onSubmit={handleSubmit} className="mt-4" id="form">
-        <div className="mb-3">
-          <label htmlFor="name" className="form-label">Nom</label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            className="form-control"
-            placeholder="Entrez votre nom"
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="email" className="form-label">Email</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            className="form-control"
-            placeholder="Entrez votre email"
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="subject" className="form-label">Sujet</label>
-          <input
-            type="text"
-            id="subject"
-            name="subject"
-            className="form-control"
-            placeholder="Entrez le sujet de votre message"
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="message" className="form-label">Message</label>
-          <textarea
-            id="message"
-            name="message"
-            className="form-control"
-            rows="5"
-            placeholder="Entrez votre message"
-            required
-          ></textarea>
-        </div>
-        <button
-          type="submit"
-          id="button"
-          className="btn btn-primary w-100"
-          disabled={isSending}
-        >
-          {isSending ? 'Envoi en cours...' : 'Envoyer'}
-        </button>
-      </form>
+    <div className="content">
+      <div className="container mt-5">
+        <h1 className="text-center mb-4">Service Client</h1>
+        <p className="text-center">
+          Vous avez une question ou besoin d'aide ? Remplissez le formulaire ci-dessous et notre équipe vous répondra dans les plus brefs délais.
+        </p>
+        <form ref={formRef} onSubmit={handleSubmit} className="mt-4" id="form">
+          <div className="mb-3">
+            <label htmlFor="name" className="form-label">Nom</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              className="form-control"
+              placeholder="Entrez votre nom"
+              required
+            />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="email" className="form-label">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              className="form-control"
+              placeholder="Entrez votre email"
+              required
+            />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="subject" className="form-label">Sujet</label>
+            <input
+              type="text"
+              id="subject"
+              name="subject"
+              className="form-control"
+              placeholder="Entrez le sujet de votre message"
+              required
+            />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="message" className="form-label">Message</label>
+            <textarea
+              id="message"
+              name="message"
+              className="form-control"
+              rows="5"
+              placeholder="Entrez votre message"
+              required
+            ></textarea>
+          </div>
+          <button
+            type="submit"
+            id="button"
+            className="btn btn-primary w-100"
+            disabled={isSending}
+          >
+            {isSending ? 'Envoi en cours...' : 'Envoyer'}
+          </button>
+        </form>
+      </div>
+      <Footer /> {/* Utilisation du composant Footer */}
     </div>
   );
 }

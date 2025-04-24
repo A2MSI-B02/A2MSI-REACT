@@ -7,6 +7,7 @@ import Footer from '../components/footer'; // Import du composant Footer
 
 function Accueil() {
   const navigate = useNavigate(); // Initialisation du hook useNavigate
+
   const searchDestination = () => {
     const searchInput = document.getElementById('search').value;
     if (searchInput.trim() === '') {

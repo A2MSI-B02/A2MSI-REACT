@@ -13,7 +13,8 @@ import AdminDashboard from "./pages/dashboard/admindashboard";
 import Favoris from './pages/sousmenu/favoris';
 import UserSettings from './pages/sousmenu/UserSettings'; 
 import ProSettings from './pages/sousmenu/ProSettings'; 
-
+import ViewService from './pages/sousmenu/ViewService'; 
+import AddService from './pages/sousmenu/AddService'; 
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
@@ -31,7 +32,9 @@ function App() {
         <Route path="/admindashboard" element={<AdminDashboard />} />
         <Route path="/favoris" element={<Favoris/>} />
         <Route path="/usersettings" element={<UserSettings />} />
-        <Route path="/prosettings" element={<ProSettings />} /> 
+        <Route path="/prosettings" element={<ProSettings />} />
+        <Route path="/ViewService" element={<ViewService />} />
+        <Route path="/AddService" element={<AddService />} />
       </Routes>
     </Router>
   );
