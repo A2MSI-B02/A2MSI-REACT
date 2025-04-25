@@ -12,7 +12,7 @@ function Accueil() {
     { name: 'New York', lat: 40.7128, lng: -74.0060 },
     { name: 'Bangkok', lat: 13.7563, lng: 100.5018 },
     { name: 'Hanoï', lat: 21.0285, lng: 105.8542 },
-    { name: 'Le Pirée', lat: 37.9402, lng: 23.6465 },
+    { name: 'Porto', lat: 41.1579438, lng: -8.6291053 },
     { name: 'Barcelone', lat: 41.3851, lng: 2.1734 },
   ];
 

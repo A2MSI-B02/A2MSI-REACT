@@ -4,9 +4,7 @@ import { collection, addDoc } from "firebase/firestore";
 import Footer from "../../components/footer";
 import { getAuth } from "firebase/auth";
 
-const auth = getAuth();
-const user = auth.currentUser;
-
+// Helpers
 const emptyHours = {
   monday: "",
   tuesday: "",
@@ -17,6 +15,30 @@ const emptyHours = {
   sunday: "",
 };
 
+/**
+ * Géocode une adresse avec l’API Google Maps
+ * @param {string} address
+ * @returns {Promise<{lat: number, lng: number}>}
+ */
+function geocodeAddress(address) {
+  return new Promise((resolve, reject) => {
+    if (!window.google || !window.google.maps || !window.google.maps.Geocoder) {
+      reject(new Error("La librairie Google Maps n'est pas chargée."));
+      return;
+    }
+    const geocoder = new window.google.maps.Geocoder();
+    geocoder.geocode({ address }, (results, status) => {
+      if (status === "OK" && results[0]) {
+        const loc = results[0].geometry.location;
+        resolve({ lat: loc.lat(), lng: loc.lng() });
+      } else {
+        reject(new Error("Adresse non trouvée (" + status + "). Veuillez vérifier l'adresse saisie."));
+      }
+    });
+  });
+}
+
+// Composant principal
 export default function AddService() {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
@@ -26,6 +48,9 @@ export default function AddService() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
+  const auth = getAuth();
+  const user = auth.currentUser;
+
   const handleInput = (e) =>
     setHours({ ...hours, [e.target.name]: e.target.value });
 
@@ -33,14 +58,26 @@ export default function AddService() {
     e.preventDefault();
     setLoading(true);
     setSuccess(false);
+
+    if (!user) {
+      alert("Vous devez être connecté.");
+      setLoading(false);
+      return;
+    }
     try {
+      // Géocode l'adresse avant d'ajouter
+      const { lat, lng } = await geocodeAddress(address);
+
       await addDoc(collection(db, "activities"), {
         name,
+        nameLowercase: name.toLowerCase(), // utile pour la recherche full-text
         address,
         website,
         phone,
         hours,
         ownerUid: user.uid,
+        lat,
+        lng
       });
       setSuccess(true);
       setName("");
@@ -49,7 +86,7 @@ export default function AddService() {
       setPhone("");
       setHours({ ...emptyHours });
     } catch (err) {
-      alert("Erreur lors de l’ajout : " + err.message);
+      alert("Erreur lors de l’ajout : " + err.message);
     } finally {
       setLoading(false);
     }
@@ -73,13 +110,7 @@ export default function AddService() {
         }}
       >
         <div>
-          <label
-            style={{
-              display: "block",
-              marginBottom: 10,
-              color: "#000", // Ajout de la couleur noire pour le titre
-            }}
-          >
+          <label style={{ display: "block", marginBottom: 10, color: "#000" }}>
             Nom*<br />
             <input
               required
@@ -96,15 +127,8 @@ export default function AddService() {
             />
           </label>
         </div>
-
         <div>
-          <label
-            style={{
-              display: "block",
-              marginBottom: 10,
-              color: "#000", // Ajout de la couleur noire pour le titre
-            }}
-          >
+          <label style={{ display: "block", marginBottom: 10, color: "#000" }}>
             Adresse*<br />
             <input
               required
@@ -121,15 +145,8 @@ export default function AddService() {
             />
           </label>
         </div>
-
         <div>
-          <label
-            style={{
-              display: "block",
-              marginBottom: 10,
-              color: "#000", // Ajout de la couleur noire pour le titre
-            }}
-          >
+          <label style={{ display: "block", marginBottom: 10, color: "#000" }}>
             Site web<br />
             <input
               value={website}
@@ -145,15 +162,8 @@ export default function AddService() {
             />
           </label>
         </div>
-
         <div>
-          <label
-            style={{
-              display: "block",
-              marginBottom: 10,
-              color: "#000", // Ajout de la couleur noire pour le titre
-            }}
-          >
+          <label style={{ display: "block", marginBottom: 10, color: "#000" }}>
             Téléphone*<br />
             <input
               required
@@ -170,7 +180,6 @@ export default function AddService() {
             />
           </label>
         </div>
-
         <fieldset
           style={{
             padding: "20px",
@@ -219,7 +228,6 @@ export default function AddService() {
             ))}
           </div>
         </fieldset>
-
         <button
           type="submit"
           disabled={loading}
