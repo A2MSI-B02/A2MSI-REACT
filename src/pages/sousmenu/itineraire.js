@@ -4,6 +4,20 @@ import HeartFav from '../../components/HeartFav';
 import Footer from '../../components/footer';
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { getAuth } from "firebase/auth"; // Import Firebase Auth
+import {
+    DndContext,
+    useSensor,
+    useSensors,
+    PointerSensor,
+    closestCenter,
+  } from '@dnd-kit/core';
+  import {
+    SortableContext,
+    useSortable,
+    verticalListSortingStrategy,
+    arrayMove as dndKitArrayMove,
+  } from '@dnd-kit/sortable';
+  import {CSS} from '@dnd-kit/utilities';
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyCRXfz02kudZpFDr4ogAmdA7BVm5AnUMuc";
 const FAV_STORAGE_KEY = "a2msi_favs";
@@ -28,6 +42,30 @@ function loadGoogleMapsScript() {
   return googleMapsScriptLoadingPromise;
 }
 
+function arrayMove(arr, fromIndex, toIndex) {
+    const newArr = arr.slice();
+    const [element] = newArr.splice(fromIndex, 1);
+    newArr.splice(toIndex, 0, element);
+    return newArr;
+  }
+
+  function SortableItem({fav, idx, children}) {
+    const {attributes, listeners, setNodeRef, transform, transition, isDragging} =
+      useSortable({id: String(idx)});
+    const style = {
+      transform: CSS.Transform.toString(transform),
+      transition,
+      opacity: isDragging ? 0.5 : 1,
+      background: isDragging ? 'lightgrey' : undefined,
+    };
+  
+    return (
+      <div ref={setNodeRef} {...attributes} {...listeners} style={style}>
+        {children}
+      </div>
+    );
+  }
+  
 function loadScript(url) {
     return new Promise((resolve) => {
         if (document.querySelector(`script[src="${url}"]`)) {
@@ -90,13 +128,24 @@ function DirectionsMap({ origin, destination }) {
   }
   
 export default function Itineraire() {
+    
   const [favoris, setFavoris] = useState([]);
+
+  const handleDragEnd = (event) => {
+    const {active, over} = event;
+    if (active.id !== over.id) {
+      setFavoris((items) => {
+        const oldIndex = items.findIndex((_, idx) => String(idx) === active.id);
+        const newIndex = items.findIndex((_, idx) => String(idx) === over.id);
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+  };
 
   useEffect(() => {
     const favs = localStorage.getItem(FAV_STORAGE_KEY);
     const parsedFavs = favs ? JSON.parse(favs) : [];
     setFavoris(parsedFavs);
-    console.log(parsedFavs); // Ajoute cette ligne
   }, []);
 
   // Helper function to extract lat and lng
@@ -117,29 +166,35 @@ export default function Itineraire() {
       return null;
     };
 
-  return (
-    <div>
-      <h2>Mon itinéraire</h2>
-      {favoris.map((fav, idx) => {
-        const latLng = getLatLng(fav);
-        const nextLatLng = getLatLng(favoris[idx + 1]);
-
-        return (
-          <div key={idx}>
-            <div>
-              <strong>{fav.name}</strong> <br />
-              {fav.formatted_address || fav.address}
-            </div>
-            {latLng && nextLatLng && idx < favoris.length - 1 && (
-              <DirectionsMap
-                origin={{ lat: latLng.lat, lng: latLng.lng }}
-                destination={{ lat: nextLatLng.lat, lng: nextLatLng.lng }}
-              />
-            )}
-          </div>
-        );
-      })}
-      <Footer />
-    </div>
-  );
+    return (
+        <div>
+          <h2>Mon itinéraire</h2>
+          <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <SortableContext
+              items={favoris.map((_, idx) => String(idx))}
+              strategy={verticalListSortingStrategy}
+            >
+              {favoris.map((fav, idx) => {
+                const latLng = getLatLng(fav);
+                const nextLatLng = getLatLng(favoris[idx + 1]);
+                return (
+                  <SortableItem key={idx} fav={fav} idx={idx}>
+                    <div>
+                      <strong>{fav.name}</strong> <br />
+                      {fav.formatted_address || fav.address}
+                    </div>
+                    {latLng && nextLatLng && idx < favoris.length - 1 && (
+                      <DirectionsMap
+                        origin={{ lat: latLng.lat, lng: latLng.lng }}
+                        destination={{ lat: nextLatLng.lat, lng: nextLatLng.lng }}
+                      />
+                    )}
+                  </SortableItem>
+                );
+              })}
+            </SortableContext>
+          </DndContext>
+          <Footer />
+        </div>
+    );
 }
