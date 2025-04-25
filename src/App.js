@@ -15,6 +15,10 @@ import UserSettings from './pages/sousmenu/UserSettings';
 import ProSettings from './pages/sousmenu/ProSettings'; 
 import ViewService from './pages/sousmenu/ViewService'; 
 import AddService from './pages/sousmenu/AddService'; 
+import TrainBooking from './pages/TrainBooking';
+import HotelBooking from './pages/HotelBooking';
+import ActivityBooking from './pages/ActivitéBooking';
+import Payment from './pages/Paiement';
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
@@ -22,6 +26,7 @@ function App() {
     <Router>
       <Navbar />
       <Routes> {/* Utilisez Routes ici */}
+        
         <Route path="/" element={<Accueil />} exact /> 
         <Route path="/destination" element={<Destination />} />
         <Route path="/connexion" element={<Connexion />} />
@@ -35,6 +40,10 @@ function App() {
         <Route path="/prosettings" element={<ProSettings />} />
         <Route path="/ViewService" element={<ViewService />} />
         <Route path="/AddService" element={<AddService />} />
+        <Route path="/train-booking" element={<TrainBooking />} />
+        <Route path="/hotel-booking" element={<HotelBooking />} />
+        <Route path="/activity-booking" element={<ActivityBooking />} />
+        <Route path="/paiement" element={<Payment />} />
       </Routes>
     </Router>
   );
