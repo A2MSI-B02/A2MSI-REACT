@@ -11,6 +11,7 @@ import UserDashboard from "./pages/dashboard/userdashboard";
 import ProDashboard from "./pages/dashboard/prodashboard";
 import AdminDashboard from "./pages/dashboard/admindashboard";
 import Favoris from './pages/sousmenu/favoris';
+import Itineraire from './pages/sousmenu/itineraire';
 import UserSettings from './pages/sousmenu/UserSettings'; 
 import ProSettings from './pages/sousmenu/ProSettings'; 
 import ViewService from './pages/sousmenu/ViewService'; 
@@ -36,6 +37,7 @@ function App() {
         <Route path="/prodashboard" element={<ProDashboard />} />
         <Route path="/admindashboard" element={<AdminDashboard />} />
         <Route path="/favoris" element={<Favoris/>} />
+        <Route path="/itineraire" element={<Itineraire />} />
         <Route path="/usersettings" element={<UserSettings />} />
         <Route path="/prosettings" element={<ProSettings />} />
         <Route path="/ViewService" element={<ViewService />} />
