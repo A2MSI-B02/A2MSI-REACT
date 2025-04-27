@@ -25,27 +25,53 @@ export default function MesActivites() {
     fetch();
   }, []);
 
+  if (!service) {
+    return <div>Chargement...</div>;
+  }
+  
   return (
-    <div style={{ maxWidth: 800, margin: "auto", padding: 20 }}>
-      <h2>Mes activités</h2>
-      {loading && <div>Chargement…</div>}
-      {!loading && activities.length === 0 && <div>Aucune activité pour l’instant.</div>}
-      <ul>
-        {activities.map(act => (
-          <li key={act.id} style={{ marginBottom: 20, padding: 12, border: "1px solid #eee", borderRadius: 8, boxShadow: "0 2px 8px #0001" }}>
-            <strong>{act.name}</strong> — {act.address}<br/>
-            {act.website && <a href={act.website} rel="noopener noreferrer" target="_blank">Site</a>} <br/>
-            {act.phone && <>Tel.: {act.phone} <br/></>}
-            <em>Horaires :</em>
-            <ul>
-              {act.hours && Object.entries(act.hours).map(([day, hours]) =>
-                <li key={day}>{day.charAt(0).toUpperCase() + day.slice(1)} : {hours}</li>
-              )}
-            </ul>
-          </li>
+    <div className="container mx-auto p-4">
+      <h1 className="text-3xl font-bold mb-6 text-center">{service.nom}</h1>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {service.lieux && service.lieux.map((lieu) => (
+          <div key={lieu.id} className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+            <img
+              src={lieu.imageUrl || '/placeholder.jpg'}
+              alt={lieu.nom}
+              className="w-full h-48 object-cover"
+            />
+            <div className="p-4">
+              <h2 className="text-xl font-semibold mb-2">{lieu.nom}</h2>
+              <p className="text-gray-600 text-sm">{lieu.description}</p>
+              <div className="mt-4">
+                <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                  Voir plus
+                </button>
+              </div>
+            </div>
+          </div>
         ))}
-      </ul>
-      <Footer />
+  
+        {service.activites && service.activites.map((activite) => (
+          <div key={activite.id} className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+            <img
+              src={activite.imageUrl || '/placeholder.jpg'}
+              alt={activite.nom}
+              className="w-full h-48 object-cover"
+            />
+            <div className="p-4">
+              <h2 className="text-xl font-semibold mb-2">{activite.nom}</h2>
+              <p className="text-gray-600 text-sm">{activite.description}</p>
+              <div className="mt-4">
+                <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                  Voir plus
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
-  );
+  );  
 }
